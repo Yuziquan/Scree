@@ -1,17 +1,13 @@
-package lexical_analysis;
+package lexical_analysis.token;
 
-/*
- * @program: Scree
- * @description:
- * @author: WuchangI
- * @create: 2018-10-24-21-18
- **/
-
-public class StrToken extends Token
+/**
+ * 字符串词法单元
+ */
+public class StringToken extends Token
 {
     private String stringLiteral;
 
-    public StrToken(int lineNumber, String stringLiteral)
+    public StringToken(int lineNumber, String stringLiteral)
     {
         super(lineNumber);
         this.stringLiteral = stringLiteral;
@@ -27,6 +23,6 @@ public class StrToken extends Token
     @Override
     public String getText()
     {
-        return stringLiteral;
+        return "string:" + stringLiteral;
     }
 }

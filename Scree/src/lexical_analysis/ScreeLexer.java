@@ -1,14 +1,8 @@
 package lexical_analysis;
 
-/*
- * @program: Scree
- * @description:
- * @author: WuchangI
- * @create: 2018-10-24-20-07
- **/
-
+import constants.Constants;
 import exception.ParseException;
-
+import lexical_analysis.token.*;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
@@ -16,26 +10,32 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 词法分析器
+ */
 public class ScreeLexer
 {
     public static final String REGEX
-            = "\\s*((//.*)|" +
-            "([0-9]+)|" +
-            "(\"(\\\\\"|\\\\\\\\|\\\\n|[^\"])*\")|" +
-            "[a-zA-Z_][a-zA-Z0-9_]*|" +
-            "==|<=|>=|&&|\\|\\||\\p{Punct})?";
+            = "\\s*((//.*)|" + "(" + Constants.IDENTIFIER_REGEX + ")|"
+            + "(" + Constants.INTEGER_REGEX + ")|"+ "(" + Constants.STRING_REGEX + ")|"
+            + Constants.SYMBOL_REGEX + ")?";
 
-    public static final Pattern REGEX_PATTERN = Pattern.compile(REGEX);
+    private Pattern REGEX_PATTERN = Pattern.compile(REGEX);
 
-    public LineNumberReader reader;
+    private LineNumberReader reader;
 
-    // 还有内容可以读取
+    /**
+     * 是否还有内容可以读取
+     */
     private boolean hasMore;
 
+    /**
+     * 已经加载的词法单元队列
+     */
     private ArrayList<Token> tokensQueue = new ArrayList<>();
 
 
-    private ScreeLexer(Reader reader)
+    public ScreeLexer(Reader reader)
     {
         this.reader = new LineNumberReader(reader);
         hasMore = true;
@@ -43,7 +43,66 @@ public class ScreeLexer
 
 
     /**
-     * 从每一行源代码中获取词法单元
+     * 读取一个词法单元，并将其从词法单元队列中移除
+     * @return 读取的词法单元
+     */
+    public Token readAToken() throws ParseException
+    {
+        if(loadTokensIntoQueue(0))
+        {
+            return tokensQueue.remove(0);
+        }
+        else
+        {
+            return Token.EOF;
+        }
+    }
+
+
+    /**
+     * 预读一个词法单元，不将其从词法单元队列中移除
+     * @param position 词法单元的预读位置
+     * @return 预读取的词法单元
+     * @throws ParseException
+     */
+    public Token peekAToken(int position) throws ParseException
+    {
+        if(loadTokensIntoQueue(position))
+        {
+            return tokensQueue.get(position);
+        }
+        else
+        {
+            return Token.EOF;
+        }
+    }
+
+
+    /**
+     *  加载更多的词法单元至词法单元队列中
+     * @param position
+     * @return
+     */
+    public boolean loadTokensIntoQueue(int position) throws ParseException
+    {
+        while(position >= tokensQueue.size())
+        {
+            if(hasMore)
+            {
+                readLine();
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * 读取一行源代码，从中解析并获取词法单元
      * @throws ParseException
      */
     private void readLine() throws ParseException
@@ -88,7 +147,7 @@ public class ScreeLexer
             }
         }
 
-        tokensQueue.add(new IdToken(lineNumber, Token.EOL));
+        tokensQueue.add(new KeywordToken(lineNumber, Token.EOL));
     }
 
 
@@ -109,15 +168,28 @@ public class ScreeLexer
             {
                 if(matcher.group(3) != null)
                 {
-                    tokensQueue.add(new NumToken(lineNumber, Integer.parseInt(matchedString)));
+                    // 如果是关键字
+                    if(Constants.KEYWORDS.contains(matchedString))
+                    {
+                        tokensQueue.add(new KeywordToken(lineNumber, matchedString));
+                    }
+                    // 如果是标识符
+                    else
+                    {
+                        tokensQueue.add(new IdentifierToken(lineNumber, matchedString));
+                    }
                 }
                 else if(matcher.group(4) != null)
                 {
-                    tokensQueue.add(new StrToken(lineNumber, toStringLiteral(matchedString)));
+                    tokensQueue.add(new IntegerToken(lineNumber, Integer.parseInt(matchedString)));
+                }
+                else if(matcher.group(5) != null)
+                {
+                    tokensQueue.add(new StringToken(lineNumber, toStringLiteral(matchedString)));
                 }
                 else
                 {
-                    tokensQueue.add(new IdToken(lineNumber, matchedString));
+                    tokensQueue.add(new SymbolToken(lineNumber, matchedString));
                 }
             }
         }
@@ -125,9 +197,12 @@ public class ScreeLexer
 
 
     /**
-     * 将字符串转换为字符串常量
-     * @param str
-     * @return
+     * 将字符串转换为字符串常量，如：
+     * 1、"This is a \"Zhou\". " -> This is a "Zhou".
+     * 2、"Hello \\Bob." -> Hello \Bob.
+     * 3、"Bye!\n" -> "Bye"
+     * @param str 待转化的字符串
+     * @return 转换得到的字符串常量
      */
     private String toStringLiteral(String str)
     {
@@ -161,59 +236,5 @@ public class ScreeLexer
     }
 
 
-    /**
-     *  加载更多的词法单元至词法单元队列中
-     * @param position
-     * @return
-     */
-    public boolean loadTokensIntoQueue(int position) throws ParseException
-    {
-        while(position >= tokensQueue.size())
-        {
-            if(hasMore)
-            {
-                readLine();
-            }
-            else
-            {
-                return false;
-            }
-        }
 
-        return true;
-    }
-
-    /**
-     * 预读一个词法单元
-     * @param position 词法单元的预读位置
-     * @return
-     * @throws ParseException
-     */
-    public Token peekAToken(int position) throws ParseException
-    {
-        if(loadTokensIntoQueue(position))
-        {
-            return tokensQueue.get(position);
-        }
-        else
-        {
-            return Token.EOF;
-        }
-    }
-
-    /**
-     * 读取一个词法单元
-     * @return
-     */
-    public Token readAToken() throws ParseException
-    {
-        if(loadTokensIntoQueue(0))
-        {
-            return tokensQueue.remove(0);
-        }
-        else
-        {
-            return Token.EOF;
-        }
-    }
 }

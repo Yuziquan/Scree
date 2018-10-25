@@ -1,13 +1,6 @@
 package exception;
 
-/*
- * @program: Scree
- * @description:
- * @author: WuchangI
- * @create: 2018-10-24-21-03
- **/
-
-import lexical_analysis.Token;
+import lexical_analysis.token.Token;
 
 import java.io.IOException;
 
@@ -22,7 +15,6 @@ public class ParseException extends Exception
     {
         super("Syntax error around " + getLocation(token) + ". " + message);
     }
-
 
     public ParseException(IOException e)
     {

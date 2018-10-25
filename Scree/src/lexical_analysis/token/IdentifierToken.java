@@ -1,17 +1,13 @@
-package lexical_analysis;
+package lexical_analysis.token;
 
-/*
- * @program: Scree
- * @description:
- * @author: WuchangI
- * @create: 2018-10-24-21-18
- **/
-
-public class IdToken extends Token
+/**
+ * 标识符词法单元
+ */
+public class IdentifierToken extends Token
 {
     private String identifier;
 
-    public IdToken(int lineNumber, String identifier)
+    public IdentifierToken(int lineNumber, String identifier)
     {
         super(lineNumber);
         this.identifier = identifier;
@@ -26,6 +22,6 @@ public class IdToken extends Token
     @Override
     public String getText()
     {
-        return identifier;
+        return "identifier:" + identifier;
     }
 }
