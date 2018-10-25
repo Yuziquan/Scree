@@ -200,7 +200,7 @@ public class ScreeLexer
      * 将字符串转换为字符串常量，如：
      * 1、"This is a \"Zhou\". " -> This is a "Zhou".
      * 2、"Hello \\Bob." -> Hello \Bob.
-     * 3、"Bye!\n" -> "Bye"
+     * 3、"Bye!\n" -> Bye!换行
      * @param str 待转化的字符串
      * @return 转换得到的字符串常量
      */
