@@ -1,6 +1,8 @@
 ## Scree
 
-[![license](https://img.shields.io/packagist/l/doctrine/orm.svg)]()
+
+[![state](https://img.shields.io/badge/state-in%20development-brightgreen.svg)](https://github.com/Yuziquan/Scree)
+[![license](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/Yuziquan/Scree/blob/master/LICENSE)
 
 
 
