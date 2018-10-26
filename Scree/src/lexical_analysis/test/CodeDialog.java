@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 /**
- *  输入Scree源代码的对话框类，继承了Reader
+ *  供用户输入Scree源代码文本的对话框类，继承了Reader
  */
 public class CodeDialog extends Reader
 {

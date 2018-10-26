@@ -1,6 +1,6 @@
 package exception;
 
-import syntax_analysis.ASTree;
+import syntax_analysis.abstract_syntax_tree.ASTNode;
 
 public class ScreeException extends RuntimeException
 {
@@ -9,7 +9,7 @@ public class ScreeException extends RuntimeException
         super(message);
     }
 
-    public ScreeException(String message, ASTree asTree)
+    public ScreeException(String message, ASTNode asTree)
     {
         super(message + "" + asTree);
     }

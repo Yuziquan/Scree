@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 保存整个系统用到的常量
+ */
 public class Constants
 {
     /**

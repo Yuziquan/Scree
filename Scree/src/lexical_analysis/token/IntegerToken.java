@@ -22,7 +22,7 @@ public class IntegerToken extends Token
     @Override
     public String getText()
     {
-        return "integer:" + Integer.toString(integerValue);
+        return Integer.toString(integerValue);
     }
 
     public int getIntegerValue()

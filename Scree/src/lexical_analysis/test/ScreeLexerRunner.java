@@ -5,6 +5,9 @@ import exception.ParseException;
 import lexical_analysis.ScreeLexer;
 import lexical_analysis.token.Token;
 
+/**
+ * 对ScreeLexer进行测试验证的类
+ */
 public class ScreeLexerRunner
 {
     public static void main(String[] args) throws ParseException

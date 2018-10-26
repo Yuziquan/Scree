@@ -4,6 +4,7 @@ import lexical_analysis.token.Token;
 
 import java.io.IOException;
 
+
 public class ParseException extends Exception
 {
     public ParseException(Token token)
